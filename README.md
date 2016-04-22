@@ -1,2 +1,4 @@
 # rediskill
-a redis queue service
+a redis queue service for key-value messages
+
+´´´
