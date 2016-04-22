@@ -1,0 +1,30 @@
+{
+  "name": "rediskill",
+  "version": "0.0.1",
+  "description": "a redis simple queue service",
+  "main": "src/rediskill.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leonardiwagner/rediskill.git"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "queue",
+    "message",
+    "redis"
+  ],
+  "author": "Wagner Leonardi",
+  "license": "\tApache-2.0",
+  "dependencies": {
+    "mocha": "^2.4.5"
+  },
+  "devDependencies": {
+    "bluebird": "^3.3.5",
+    "redis": "^2.6.0-1"
+  }
+}
