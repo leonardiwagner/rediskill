@@ -11,7 +11,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm test"
+    "test": "node_modules/mocha/bin/mocha \"test/**/*.js\""
   },
   "keywords": [
     "queue",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "bluebird": "^3.3.5",
+    "chai": "^3.5.0",
     "redis": "^2.6.0-1"
   }
 }

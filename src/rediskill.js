@@ -1,24 +1,31 @@
+var Promise = require('bluebird');
+
 var redisConnection = require('./redisConnection');
+var Message = require('./message')
 
-var rediskill = function(host, port){
-  var QUEUE_NAME = 'rediskill';
-  var connection = redisConnection(host, port);
-  var messageSender = require('./messageSender')(connection, QUEUE_NAME);
-  var messageReceiver = require('./messageReceiver')(connection, QUEUE_NAME);
+var sendMessages = function(){
+  
+}
 
-  var sendMessages = function(messages){
-    var sendMessagesFunctions = messages.map(function(message){
-      return messageSender.send(message.key, message.value);
-    });
+module.exports = {
+  connectToRedisAndUseItAsQueue: function(host, port){
+    var connection = redisConnection(host, port);
+    var QUEUE_NAME = 'RediskillQueue';
 
-    return Promise.all(sendMessagesFunctions);
+    var messageSender = require('./messageSender')(connection, QUEUE_NAME);
+    var messageReceiver = require('./messageReceiver')(connection, QUEUE_NAME);
+
+    return {
+      getRedisConnection: function(){
+        return connection;
+      },
+      sendMessage: function(message){
+        return messageSender.send(message.key, message.value)
+      },
+      receiveMessage: messageReceiver.receive
+    }
+  },
+  Message: function(key, value){
+    return new Message(key, value)
   }
-
-  return {
-    sendMessage: messageSender.send,
-    sendMessages: sendMessages,
-    receiveMessage: messageReceiver.receive
-  }
-};
-
-module.exports = rediskill;
+}
