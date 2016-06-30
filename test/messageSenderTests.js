@@ -1,11 +1,9 @@
+
 var should = require('chai').should();
 var testHelper = require('./testHelper')
 
-var rediskill = require('../src/rediskill');
-var queue = rediskill.connectToRedisAndUseItAsQueue('redis', 6379)
-
 describe('send message tests', function() {
-  this.timeout(5000);
+
 
   beforeEach(function(done){
     testHelper.flushRedis(queue.getRedisConnection(), done)

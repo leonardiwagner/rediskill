@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 
-module.exports = function(redis, queueName){
+module.exports = function(redisConnection, queueName){
   var keyAlreadyExists = function(key) {
     return new Promise(function(resolve, reject){
       redis.exists(key, function(err, reply){
