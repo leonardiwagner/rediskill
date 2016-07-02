@@ -1,28 +1,63 @@
-
+var testHelper = require('./testHelper');
 var should = require('chai').should();
-var testHelper = require('./testHelper')
 
-describe('send message tests', function() {
+var MessageSender = require('../src/messageSender');
+var Message = require('../src/message');
 
-
+describe.only('Message Sender Tests', function(){
   beforeEach(function(done){
-    testHelper.flushRedis(queue.getRedisConnection(), done)
+    testHelper.flushRedis(done)
   });
 
-  it('should send message', function(done) {
-    var message = new rediskill.Message('someKey', 'someValue')
-    queue.sendMessage(message).then(done);
+  it('should send message', function(done){
+    testHelper.getConnection().then(function(redis){
+      var messageSender = new MessageSender(redis);
+
+      messageSender.sendMessage('somelist', new Message(1, 'some value'))
+      .then(function() {
+        redis.llen('somelist', function (err, length) {
+          length.should.equals(1);
+          done();
+        });
+      });
+    });
   });
 
-  it('should throw error when key already exists on queue', function(done) {
-    var message = new rediskill.Message('someKey', 'someValue')
-    var message2 = new rediskill.Message('someKey', 'someValue2')
+  it('should send two messages', function(done){
+    testHelper.getConnection().then(function(redis){
+      var messageSender = new MessageSender(redis);
 
-    queue.sendMessage(message)
-      .then(queue.sendMessage(message2))
-      .then(done)
-      .catch(function(e){
-        console.log('ie', e);
-      })
+      messageSender.sendMessage('somelist', new Message(1, 'some value'))
+      .then(messageSender.sendMessage('somelist', new Message(2, 'some value')))
+      .then(function() {
+        redis.llen('somelist', function (err, length) {
+          length.should.equals(2);
+          done();
+        });
+      });
+    });
   });
+
+  it.only('should fail sending two messages with same key', function(done){
+    testHelper.getConnection().then(function(redis){
+      var messageSender = new MessageSender(redis);
+
+      messageSender.sendMessage('somelist', new Message(1, 'some value'))
+        .then(messageSender.sendMessage('somelist', new Message(1, 'some value')))
+        .then(function() {
+          redis.llen('somelist', function (err, length) {
+            length.should.equals(1);
+            done();
+          });
+        })
+        .catch(function(err){
+          console.log(err);
+        })
+
+    });
+  });
+
+
+
+
 });

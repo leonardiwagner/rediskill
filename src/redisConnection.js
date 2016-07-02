@@ -14,7 +14,7 @@ var connect = function(host, port){
 
     setInterval(function(){
       if(redisClient.connected){
-        resolve();
+        resolve(redisClient);
       }
     }, 1000)
   });
